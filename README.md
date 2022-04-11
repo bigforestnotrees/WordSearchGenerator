@@ -2,7 +2,7 @@
 
 To use the word search generator, simply modify the word_list variable in the file and use the following command:
 
-$ python wordsearchgen.py
+    $ python wordsearchgen.py
 
 Default output, with word_list = ["Hello", "World"] and size = 25:
 
@@ -31,5 +31,9 @@ Default output, with word_list = ["Hello", "World"] and size = 25:
     W Z O T C S I P T B A Q X E H Z E T J O C L S G P
     C C N B Q I E B K A N H O T E N Z H B K S Q G G U
     Z I W M W I A Q J D X A M X H F W B L M S P L Y L
+
+To generate different results on the same input, pass seeded=True to the constructor, like so:
+
+    x = SquareWordSearch(word_list, size=25, seeded=True)
 
 Enjoy!

@@ -218,5 +218,6 @@ class SquareWordSearch:
 
 if __name__=="__main__":
     # Enter your list of words below:
-    x = SquareWordSearch(["Hellow","Worlder"], size=25)
+    word_list = ["Hello","World"]
+    x = SquareWordSearch(word_list, size=25)
     print(x)

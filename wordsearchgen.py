@@ -57,7 +57,7 @@ class SquareWordSearch:
         legal_characters = {c for c in string.ascii_letters}
 
         # Validate basic error cases.
-        if len(words) > size:
+        if len(words) > size * size:
             raise TooManyWordsError("Too many words were provided.")
 
         long_words = []
@@ -135,7 +135,7 @@ class SquareWordSearch:
                         if c in collision_chars and board[point.y][point.x] == c:
                             before = i
                             after = len(current_word) - (i + 1)
-                            
+
                             opposite = (-added_word.direction[0], -added_word.direction[1])
                             dir_set = [dir for dir in SquareWordSearch.directions if dir not in (added_word.direction, opposite)]
 
@@ -144,7 +144,7 @@ class SquareWordSearch:
                                 beginning_y = point.y + before * -dir[1]
                                 ending_x = point.x + after * dir[0]
                                 ending_y = point.y + after * dir[1]
-                                
+
                                 if beginning_x >= 0 and beginning_x < size and \
                                 beginning_y >= 0 and beginning_y < size and \
                                 ending_x >= 0 and ending_x < size and \
@@ -156,14 +156,15 @@ class SquareWordSearch:
 
                 # Filter by intersections with other words already on the board
                 for i, pos in enumerate(possible_pos):
-                    for m, dir in enumerate(possible_dirs):
-                        for j in range(len(current_word)):
-                            # if the board at any point in the word is occupied, remove that possibility.
-                            x = pos.x + j*dir[0]
-                            y = pos.y + j*dir[1]
-                            
-                            if board[y][x] and board[y][x] != current_word[j] and i not in to_remove:
-                                to_remove.append(i)
+                    for j in range(len(current_word)):
+                        # if the board at any point in the word is occupied, remove that possibility.
+                        x = pos.x + j*possible_dirs[i][0]
+                        y = pos.y + j*possible_dirs[i][1]
+
+                        if board[y][x] \
+                            and board[y][x] != current_word[j] \
+                                and i not in to_remove:
+                            to_remove.append(i)
 
                 for index in to_remove[::-1]:
                     possible_dirs.pop(index)
@@ -209,7 +210,7 @@ class SquareWordSearch:
             words_by_len.pop(0)
         
         # Print debugging - See where answers are placed by uncommenting line below.
-        # print('\n'.join([' '.join([c if c != '' else ' ' for c in x]) for x in board]))
+        print('\n'.join([' '.join([c if c != '' else ' ' for c in x]) for x in board]))
 
         self.added_words = added_words
         self.result = [[self.result[y][x] if not board[y][x] else board[y][x] for x, _ in enumerate(row)] for y, row in enumerate(self.result)]
@@ -220,6 +221,28 @@ class SquareWordSearch:
 
 if __name__=="__main__":
     # Enter your list of words below:
-    word_list = ["Hello","World"]
+    word_list = [
+        "ability",
+        "able",
+        "about",
+        "above",
+        "accept",
+        "according",
+        "account",
+        "across",
+        "act",
+        "action",
+        "activity",
+        "actually",
+        "add",
+        "address",
+        "administration",
+        "admit",
+        "adult",
+        "affect",
+        "after",
+        "again",
+        "against",
+    ]
     x = SquareWordSearch(word_list, size=25)
     print(x)

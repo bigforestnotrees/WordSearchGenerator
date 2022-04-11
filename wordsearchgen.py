@@ -131,12 +131,12 @@ class SquareWordSearch:
                 for point in collision_positions:
                     for i, c in enumerate(current_word):
                         if c in collision_chars:
-                            word_length = len(current_word)
+                            print(c)
                             before = i
-                            after = word_length - (i + 1)
+                            after = len(current_word) - (i + 1)
                             
                             direction_index = SquareWordSearch.directions.index(added_word.direction)
-                            opposite = SquareWordSearch.opposite_directions[direction_index]
+                            opposite = (-added_word.direction[0], -added_word.direction[1])
                             possible_dirs = [dir for dir in SquareWordSearch.directions if dir not in (added_word.direction, opposite)]
                             
                             possible_pos: List[Point] = []
@@ -154,7 +154,7 @@ class SquareWordSearch:
                                     possible_pos.append(Point(beginning_x, beginning_y))
                                 else:
                                     to_remove.append(i)
-                            
+
                             for index in to_remove[::-1]:
                                 possible_dirs.pop(index)
                             
@@ -162,13 +162,17 @@ class SquareWordSearch:
                                 raise Exception("The length of possible directions was different than that of the possible positions.")
 
                             to_remove = []
+
                             # Filter by intersections with other words already on the board
                             for i, pos in enumerate(possible_pos):
                                 for j in range(len(current_word)):
                                     # if the board at any point in the word is occupied, remove that possibility.
-                                    if board[pos.y + j*possible_dirs[i][1]][pos.x + j*possible_dirs[i][0]]:
+                                    x = pos.x + j*possible_dirs[i][0]
+                                    y = pos.y + j*possible_dirs[i][1]
+
+                                    if board[y][x] != current_word[j] and i not in to_remove:
                                         to_remove.append(i)
-                            
+
                             for index in to_remove[::-1]:
                                 possible_dirs.pop(index)
                                 possible_pos.pop(index)
@@ -188,12 +192,15 @@ class SquareWordSearch:
                             continue
                         else:
                             for i in range(len(current_word)):
-                                if board[y + i * dir[1]][x + i * dir[0]]:
+                                if board[y + i * dir[1]][x + i * dir[0]] and board[y + i * dir[1]][x + i * dir[0]] != current_word[i]:
+                                    print(board[y + i * dir[1]][x + i * dir[0]], current_word, current_word[i])
                                     break
                             else:
                                 possible_single_words.append(Word(current_word, Point(x,y), dir))
 
+            print('\n'.join([' '.join([c if c != '' else ' ' for c in x]) for x in board]))
             choice: Word = None
+            print(possible_intersected_words)
             if possible_intersected_words and random.randint(0,1):
                 choice = random.choice(possible_intersected_words)
             elif possible_single_words:

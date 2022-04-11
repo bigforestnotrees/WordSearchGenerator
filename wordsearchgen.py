@@ -1,6 +1,6 @@
 import string
 import random
-import datetime
+import time
 from typing import List
 
 class WordTooLongError(Exception):
@@ -81,7 +81,7 @@ class SquareWordSearch:
         del legal_characters
 
         if seeded:
-            random.seed(datetime.time.isoformat)
+            random.seed(time.time())
         else:
             random.seed("Hello, WordSearch!")
 

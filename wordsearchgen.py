@@ -42,7 +42,7 @@ class SquareWordSearch:
         Arguments:
 
         words -- list of strings containing english letters [A-Za-z].
-        Inputting an invalid string in words will result in an InvalidStringError
+        Inputting an invalid string in words will result in an IllegalStringError
         exception.
         Inputting a number of words greater than size will result in a
         TooManyWordsError exception.
@@ -210,7 +210,7 @@ class SquareWordSearch:
             words_by_len.pop(0)
         
         # Print debugging - See where answers are placed by uncommenting line below.
-        print('\n'.join([' '.join([c if c != '' else ' ' for c in x]) for x in board]))
+        # print('\n'.join([' '.join([c if c != '' else ' ' for c in x]) for x in board]))
 
         self.added_words = added_words
         self.result = [[self.result[y][x] if not board[y][x] else board[y][x] for x, _ in enumerate(row)] for y, row in enumerate(self.result)]
@@ -219,6 +219,8 @@ class SquareWordSearch:
         return '\n'.join([' '.join(x) for x in self.result])
 
 
+'''
+# Uncomment this section to run an example.
 if __name__=="__main__":
     # Enter your list of words below:
     word_list = [
@@ -246,3 +248,4 @@ if __name__=="__main__":
     ]
     x = SquareWordSearch(word_list, size=25)
     print(x)
+'''

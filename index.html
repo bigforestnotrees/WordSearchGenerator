@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/pyodide/v0.19.1/full/pyodide.js"
+    ></script>
+    <script type="text/javascript">
+      var code;
+      var pyodide;
+      
+      async function getLatest() {
+        
+        let response = await fetch('wordsearchgen.py');
+        let text = await response.text();
+        code = text;
+        await main()
+        
+      }
+      async function main() {
+        
+        pyodide = await loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.19.1/full/",
+        });
+
+        await pyodide.runPythonAsync(code);
+      }
+
+      async function genWordSearch(form) {
+        let wl = document.querySelector("#word_list").value;
+        let checked = document.querySelector("#seeded").checked;
+        let number = document.querySelector("#size").valueAsNumber;
+        let output = document.getElementById('output');
+        if (!wl.match(/(?: *?[a-zA-Z]+ *?\, *?)+[a-zA-Z]+/)) {
+          output.innerText = 'Error; invalid word characters entered in textarea. Valid characters include letters (A-Za-z) followed by a comma, with spaces inbetween.';
+        }
+        let word_list = '[' + wl.split(',').map(value => '"' + value.trim() + '"')
+          .reduce((previousValue, currentValue) => previousValue + ',' + currentValue) + ']';
+        let seeded = checked ? 'True' : 'False';
+        let size = number;
+
+        let to_run = `search = str(SquareWordSearch(${word_list}, seeded=${seeded}, size=${size}))`;
+        
+        await pyodide.runPythonAsync(to_run);
+
+        output.innerHTML = pyodide.globals.get('search').replaceAll('\n', '<br>');
+      }
+      getLatest();
+    </script>
+    <form id="searchForm" action="#" onsubmit="genWordSearch(this);return false;"> 
+      <label for="word_list">Word List (Comma separated words):</label><br>
+      <input type="text" name="word_list" id="word_list"><br>
+      <label for="seeded">Seeded:</label><br>
+      <input type="checkbox" name="seeded" id="seeded"><br>
+      <label for="size">Size:</label><br>
+      <input type="number" name="size" id="size"><br>
+      <input type="submit" value="Submit">
+    </form>
+    <div style="font-family: monospace" id="output">
+
+    </div>
+  </body>
+</html>
